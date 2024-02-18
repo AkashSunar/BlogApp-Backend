@@ -1,13 +1,20 @@
+
 POST http://localhost:3003/api/v1/blogs/
 Content-Type: application/json
 
 {
-    "id":1,
-    "title":"A Beautifull Story",
-    "content":"hello this is a beautiful story created by Nolan",
-    "author":"Christopher Nolan",
-    "likes":100
+    "id":2,
+    "title":"Muna Madan",
+    "content":"A painful love story of Muna and Madan",
+    "author":"Laxmi Prasad Devkota",
+    "likes":1000
 }
 
 ###
 GET http://localhost:3003/api/v1/blogs/
+
+###
+GET http://localhost:3003/api/v1/blogs/2
+
+###
+DELETE http://localhost:3003/api/v1/blogs/1
