@@ -1,0 +1,13 @@
+POST http://localhost:3003/api/v1/blogs/
+Content-Type: application/json
+
+{
+    "id":1,
+    "title":"A Beautifull Story",
+    "content":"hello this is a beautiful story created by Nolan",
+    "author":"Christopher Nolan",
+    "likes":100
+}
+
+###
+GET http://localhost:3003/api/v1/blogs/
