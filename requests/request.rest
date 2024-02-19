@@ -3,11 +3,11 @@ POST http://localhost:3003/api/v1/blogs/
 Content-Type: application/json
 
 {
-    "id":4,
-    "title":"Ijoriya",
+    "id":5,
+    "title":"priya Sufi",
     "content":"A beautiful novel",
     "author":"Subin Bhattarai",
-    "likes":1500
+    "likes":100
 }
 
 ###
@@ -15,8 +15,7 @@ PUT http://localhost:3003/api/v1/blogs/2
 Content-Type: application/json
 
 {
-    "title":"Prison Break",
-    "likes":50
+    "likes":200
 }
 
 ###
@@ -26,4 +25,4 @@ GET http://localhost:3003/api/v1/blogs/
 GET http://localhost:3003/api/v1/blogs/2
 
 ###
-DELETE http://localhost:3003/api/v1/blogs/1
+DELETE http://localhost:3003/api/v1/blogs/5
