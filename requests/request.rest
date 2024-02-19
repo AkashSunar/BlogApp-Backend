@@ -3,10 +3,10 @@ POST http://localhost:3003/api/v1/blogs/
 Content-Type: application/json
 
 {
-    "id":6,
-    "title":"A kadak mayor of Dharan",
-    "content":"A story of a mayor in Dharan",
-    "author":"Harka Sampang",
+    "id":8,
+    "title":"A kadak mayor of kathmandu",
+    "content":"A story of a mayor in Kathmandu",
+    "author":"Balen Shah",
     "likes":100
 }
 
