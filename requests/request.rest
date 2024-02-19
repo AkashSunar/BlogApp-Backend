@@ -3,19 +3,19 @@ POST http://localhost:3003/api/v1/blogs/
 Content-Type: application/json
 
 {
-    "id":5,
-    "title":"priya Sufi",
-    "content":"A beautiful novel",
-    "author":"Subin Bhattarai",
+    "id":6,
+    "title":"A kadak mayor of Dharan",
+    "content":"A story of a mayor in Dharan",
+    "author":"Harka Sampang",
     "likes":100
 }
 
 ###
-PUT http://localhost:3003/api/v1/blogs/2
+PUT http://localhost:3003/api/v1/blogs/6
 Content-Type: application/json
 
 {
-    "likes":200
+    "likes":400
 }
 
 ###
@@ -25,4 +25,4 @@ GET http://localhost:3003/api/v1/blogs/
 GET http://localhost:3003/api/v1/blogs/2
 
 ###
-DELETE http://localhost:3003/api/v1/blogs/5
+DELETE http://localhost:3003/api/v1/blogs/6
