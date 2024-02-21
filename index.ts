@@ -1,4 +1,3 @@
-// const express = require("express");
 import indexRouter from "./routes/index";
 import dotenv from "dotenv";
 dotenv.config();

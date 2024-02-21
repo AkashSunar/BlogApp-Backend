@@ -1,5 +1,5 @@
 import prisma from "../../DB/db.config";
-import { Blog } from "../blog.type";
+import { Blog } from "./blog.type";
 
 export const createBlog = async (blog: Blog): Promise<Blog> => {
   return await prisma.blog.create({

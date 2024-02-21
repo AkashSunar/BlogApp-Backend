@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { Blog } from "../blog.type";
+import { Blog } from "./blog.type";
 import {
   createBlog,
   getAllBlog,
