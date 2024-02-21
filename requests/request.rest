@@ -4,18 +4,18 @@ Content-Type: application/json
 
 {
     "id":8,
-    "title":"A kadak mayor of kathmandu",
+    "title":"",
     "content":"A story of a mayor in Kathmandu",
     "author":"Balen Shah",
     "likes":100
 }
 
 ###
-PUT http://localhost:3003/api/v1/blogs/6
+PUT http://localhost:3003/api/v1/blogs/3
 Content-Type: application/json
 
 {
-    "likes":400
+    "author":""
 }
 
 ###

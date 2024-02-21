@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import { Blog } from "./blog.type";
+import { blogSchema,updateSchema } from "./blogValidators";
+import {blogValidator } from "../../middlewares/validate-middleware"
 import {
   createBlog,
   getAllBlog,
@@ -28,7 +30,7 @@ blogRouter.get(
 );
 
 blogRouter.post(
-  "/",
+  "/",blogValidator(blogSchema),
   async (req: Request, res: Response): Promise<Response<Blog>> => {
     const newBlog = await createBlog(req.body);
     return res.status(201).json(newBlog);
@@ -36,7 +38,7 @@ blogRouter.post(
 );
 
 blogRouter.put(
-  "/:id",
+  "/:id",blogValidator(updateSchema),
   async (req: Request, res: Response): Promise<Response<Blog>> => {
     const blogId = parseInt(req.params.id);
     const content = req.body;
