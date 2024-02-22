@@ -14,3 +14,17 @@ model  Blog{
   author String
   likes Int
 }
+model User{
+  id Int @id @default(autoincrement())
+  name String
+  username String
+  email String
+  password String
+  image String
+  role Role @default(USER)
+}
+
+enum Role{
+  USER
+  ADMIN
+}

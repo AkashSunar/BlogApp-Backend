@@ -1,5 +1,6 @@
 import express from "express";
 import blogRouter from "../modules/blog/blog.route";
+import userRouter from "../modules/user/user.route"
 
 const router = express.Router();
 
@@ -65,4 +66,5 @@ const router = express.Router();
 //  */
 
 router.use("/blogs", blogRouter);
+router.use("/users",userRouter)
 export default router;

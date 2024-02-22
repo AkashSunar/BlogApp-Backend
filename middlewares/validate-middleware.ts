@@ -7,7 +7,7 @@ export const blogValidator =
       next();
     } catch (err) {
       const errorMessage = err.errors[0].message;
-      //   console.log(err.errors, "checking error");
+        // console.log(err, "checking error");
       res.status(400).json({ msg: errorMessage });
     }
   };
