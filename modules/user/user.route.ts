@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
-import { User } from "./user.type";
+import { UserType} from "./user.type";
 import multer from "multer";
-import { createUser, getAllUser, getUserByid } from "./user.controller";
-// import { date } from "zod";
+import { createUser, getAllUser, getUserByid, login } from "./user.controller";
 const userRouter = express.Router();
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
@@ -12,11 +11,12 @@ const storage = multer.diskStorage({
     return cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
+
 const upload = multer({ storage });
 
 userRouter.get(
   "/",
-  async (_req: Request, res: Response): Promise<Response<User[]>> => {
+  async (_req: Request, res: Response): Promise<Response<UserType[]>> => {
     const allUsers = await getAllUser();
     return res.status(200).json(allUsers);
   }
@@ -31,7 +31,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 userRouter.post(
   "/signup",
   upload.single("image"),
-  async (req: Request, res: Response): Promise<Response<User>> => {
+  async (req: Request, res: Response): Promise<Response<UserType>> => {
     if (req?.file) {
       req.body.image = req.file.filename;
     }
@@ -39,5 +39,9 @@ userRouter.post(
     return res.status(201).json(newUser);
   }
 );
+userRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
+  const result = await login(req.body.email, req.body.password);
+  return res.status(200).json(result);
+});
 
 export default userRouter;

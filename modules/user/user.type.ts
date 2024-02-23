@@ -1,14 +1,17 @@
-export interface User {
+export interface UserType {
   id?: number;
   username: string;
   name: string;
   email: string;
-  password: string;
+  passwordHash?: string;
   image: string;
   role: Role;
 }
-
 enum Role {
-  USER,
-  ADMIN,
+  "USER",
+  "ADMIN",
+}
+export interface UserReturnType {
+  email: string;
+  token: string;
 }
