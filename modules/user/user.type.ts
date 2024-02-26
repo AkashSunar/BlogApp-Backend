@@ -5,7 +5,7 @@ export interface UserType {
   email: string;
   passwordHash?: string;
   image: string;
-  role: Role;
+  role?: Role;
 }
 enum Role {
   "USER",

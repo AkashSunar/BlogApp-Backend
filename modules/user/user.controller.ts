@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import prisma from "../../DB/db.config";
 import { UserReturnType, UserType } from "./user.type";
-import { generateOTP, verifyOTP } from "../../utils/otp";
+// import { generateOTP, verifyOTP } from "../../utils/otp";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -71,25 +71,25 @@ export const login = async (
   };
 };
 
-const generateFPtoken = async (email:string): Promise<boolean> => {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-  if (!user) throw new Error("user doesn't exist");
-  const otpToken = generateOTP();
-  const newUser = { email, otpToken };
-  await prisma.user.create({
-    data: newUser,
-  });
-  return true;
-};
-export const forgotPassword = async (email: any) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-  if (!user) throw new Error("user doesn't exist");
-};
+// const generateFPtoken = async (email:string): Promise<boolean> => {
+//   const user = await prisma.user.findUnique({
+//     where: {
+//       email,
+//     },
+//   });
+//   if (!user) throw new Error("user doesn't exist");
+//   const otpToken = generateOTP();
+//   const newUser = { email, otpToken };
+//   await prisma.user.create({
+//     data: newUser,
+//   });
+//   return true;
+// };
+// export const forgotPassword = async (email: any) => {
+//   const user = await prisma.user.findUnique({
+//     where: {
+//       email,
+//     },
+//   });
+//   if (!user) throw new Error("user doesn't exist");
+// };

@@ -10,5 +10,16 @@ export default {
         likes: { type: "number" },
       },
     },
+    users: {
+      type: "object",
+      properties: {
+        id: { type: "number" },
+        username: { type: "string" },
+        name: { type: "string" },
+        email: { type: "string" },
+        image: { type: "string" },
+        role: { type: "string", enum: ["USER", "ADMIN"], default: ["USER"] },
+      },
+    },
   },
 };

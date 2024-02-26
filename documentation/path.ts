@@ -152,5 +152,51 @@ export default {
         },
       },
     },
+    "/users": {
+      get: {
+        tags: ["Users"],
+        summary: "Get all users",
+        description: "Returns all the users",
+        consumes: ["application/json"],
+        produces: ["application/json"],
+        responses: {
+          200: {
+            description: "successful operation",
+            schema: {
+              $ref: "#/definitions/users",
+            },
+          },
+          500: { description: "internal server error" },
+        },
+      },
+    },
+    "/users/{id}": {
+      get: {
+        tags: ["Users"],
+        summary: "get a particular user",
+        description: "Returns a user with that id",
+        produces: ["application/json"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "Id of user to be return",
+            required: true,
+            type: "string",
+          },
+        ],
+        responses: {
+          200: {
+            description: "seccessful request",
+            schema: {
+              $ref: "#/definitions/users",
+            },
+            500: {
+              descriptions: "internal server error",
+            },
+          },
+        },
+      },
+    },
   },
 };

@@ -8,4 +8,4 @@ export const blogSchema = z.object({
   likes: z.number({ required_error: "likes is required" }).min(1),
 });
 
-export const updateSchema = blogSchema.partial();
+export const updateSchema =    blogSchema.partial();
