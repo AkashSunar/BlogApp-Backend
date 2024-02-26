@@ -1,6 +1,5 @@
 import indexRouter from "./routes/index";
 import dotenv from "dotenv";
-// import bodyParser from "body-parser";
 dotenv.config();
 // import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
@@ -18,7 +17,6 @@ app.use(
 );
 
 app.use(express.json());
-// app.use(bodyParser.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
