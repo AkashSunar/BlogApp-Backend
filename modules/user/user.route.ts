@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 import { UserType } from "./user.type";
 import multer from "multer";
-// import { userSchema } from "./userValidators";
-// import { userValidator } from "../../middlewares/validate-middleware";
+import { userValidator } from "../../middlewares/validate-middleware";
 import { createUser, getAllUser, getUserByid, login } from "./user.controller";
 const userRouter = express.Router();
 const storage = multer.diskStorage({
@@ -32,8 +31,8 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 
 userRouter.post(
   "/signup",
-  // userValidator(userSchema),
   upload.single("image"),
+  userValidator,
   async (req: Request, res: Response): Promise<Response<UserType>> => {
     if (req?.file) {
       req.body.image = req.file.filename;
