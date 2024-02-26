@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import { Blog } from "./blog.type";
-// import {updateSchema } from "./blogValidators";
 import {blogValidator } from "../../middlewares/validate-middleware"
 import {
   createBlog,
