@@ -5,6 +5,9 @@ export interface UserType {
   email: string;
   passwordHash?: string;
   image: string;
+  isEmailVerified: boolean;
+  isActive: boolean;
+  isArchive: boolean;
   role?: Role;
 }
 enum Role {
