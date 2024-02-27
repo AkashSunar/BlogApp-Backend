@@ -1,6 +1,7 @@
 import express from "express";
 import blogRouter from "../modules/blog/blog.route";
 import userRouter from "../modules/user/user.route"
+// import authRouter from "../modules/auth/auth.route";
 
 const router = express.Router();
 
@@ -66,5 +67,6 @@ const router = express.Router();
 //  */
 
 router.use("/blogs", blogRouter);
-router.use("/users",userRouter)
+router.use("/users", userRouter);
+// router.use("/auths",authRouter)
 export default router;

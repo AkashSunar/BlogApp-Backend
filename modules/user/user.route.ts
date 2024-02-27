@@ -2,7 +2,14 @@ import express, { Request, Response } from "express";
 import { UserType } from "./user.type";
 import multer from "multer";
 import { userValidator } from "../../middlewares/validate-middleware";
-import { createUser, getAllUser, getUserByid, login } from "./user.controller";
+import {
+  createUser,
+  getAllUser,
+  getUserByid,
+  login,
+  verify,
+} from "./user.controller";
+// import { verify } from "jsonwebtoken";
 const userRouter = express.Router();
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
@@ -39,6 +46,17 @@ userRouter.post(
     }
     const newUser = await createUser(req.body);
     return res.status(201).json(newUser);
+  }
+);
+userRouter.post(
+  "/verify",
+  async (req: Request, res: Response):Promise<any> => {
+    try {
+      const result = await verify(req.body);
+      return res.status(200).json({ data: result, msg: "success" });
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 userRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
