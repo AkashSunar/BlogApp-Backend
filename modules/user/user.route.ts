@@ -50,7 +50,7 @@ userRouter.post(
 );
 userRouter.post(
   "/verify",
-  async (req: Request, res: Response):Promise<any> => {
+  async (req: Request, res: Response): Promise<any> => {
     try {
       const result = await verify(req.body);
       return res.status(200).json({ data: result, msg: "success" });

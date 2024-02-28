@@ -68,6 +68,7 @@ export const createUser = async (user: any): Promise<User> => {
   await prisma.auth.create({
     data: authUSer,
   });
+  // console.log(newUser)
   await mailer(user.email, +otpToken);
   return await prisma.user.create({
     data: newUser,
@@ -114,6 +115,9 @@ export const login = async (
   const passwordCorrect =
     user === null ? false : await bcrypt.compare(password, user.passwordHash);
   if (!(passwordCorrect && user)) throw new Error("Invalid error or password");
+  if (!user.isEmailVerified) throw new Error("Email is not verified");
+  if (!user.isActive) throw new Error("Email is not active yet");
+
   const payload = {
     email: user.email,
     id: user.id,

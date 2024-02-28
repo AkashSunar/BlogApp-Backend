@@ -5,6 +5,6 @@ export const userSchema = z.object({
   password: z.string({ required_error: "password is missing" }).min(1),
   email: z.string({ required_error: "email is required" }).min(1),
   name: z.string({ required_error: "name is required" }).min(1),
-  role: z.string({ required_error: "role is required" }).min(1),
+  // role: z.string({ required_error: "role is required" }).min(1),
   image: z.string({ required_error: "image is required" }),
 });
