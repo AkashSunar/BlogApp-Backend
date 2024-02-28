@@ -129,25 +129,53 @@ export const login = async (
   };
 };
 
-// const generateFPtoken = async (email:string): Promise<boolean> => {
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       email,
-//     },
-//   });
-//   if (!user) throw new Error("user doesn't exist");
-//   const otpToken = generateOTP();
-//   const newUser = { email, otpToken };
-//   await prisma.user.create({
-//     data: newUser,
-//   });
-//   return true;
-// };
-// export const forgotPassword = async (email: any) => {
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       email,
-//     },
-//   });
-//   if (!user) throw new Error("user doesn't exist");
-// };
+export const forgetPasswordtoken = async (email: string): Promise<boolean> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) throw new Error("user doesn't exist");
+  const otpToken = Number(generateOTP());
+  const newUser = { email, otpToken };
+  await prisma.auth.create({
+    //creation of authUser
+    data: newUser,
+  });
+  await mailer(email, otpToken);
+  return true;
+};
+
+export const forgotPassword = async (
+  email: string,
+  otpToken: number,
+  password: string
+): Promise<boolean> => {
+  const saltRounds = 10;
+  const authUser = await prisma.auth.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!authUser) throw new Error("user doesn't exist");
+  console.log(otpToken,typeof(otpToken),"checking otp token")
+  const isValidToken = verifyOTP(String(otpToken));
+  console.log(isValidToken,"checking validity")
+  if (!isValidToken) throw new Error("provided otp token is not valid");
+  const isEmailValid = authUser.otpToken === otpToken;
+  if (!isEmailValid) throw new Error(" provided email is not valid");
+  await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      passwordHash: await bcrypt.hash(password, saltRounds),
+    },
+  });
+  await prisma.auth.delete({
+    where: {
+      email,
+    },
+  });
+  return true;
+};

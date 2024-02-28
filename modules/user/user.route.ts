@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { UserType } from "./user.type";
 import multer from "multer";
 import { userValidator } from "../../middlewares/validate-middleware";
@@ -8,6 +8,8 @@ import {
   getUserByid,
   login,
   verify,
+  forgetPasswordtoken,
+  forgotPassword,
 } from "./user.controller";
 // import { verify } from "jsonwebtoken";
 const userRouter = express.Router();
@@ -63,5 +65,33 @@ userRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
   const result = await login(req.body.email, req.body.password);
   return res.status(200).json(result);
 });
+
+userRouter.post(
+  "/FPToken",
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+      const { email } = req.body;
+      if (!email) throw new Error("Email doesn't exist");
+      const result = await forgetPasswordtoken(email);
+      return res.status(200).json({ data: result, msg: "success" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+userRouter.post(
+  "/forget-password",
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+      const { email, password, otpToken } = req.body;
+      const result = await forgotPassword(email,otpToken,password);
+      return res
+        .status(200)
+        .json({ data: result, msg: "your password updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default userRouter;
