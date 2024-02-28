@@ -10,6 +10,8 @@ import {
   verify,
   forgetPasswordtoken,
   forgotPassword,
+  changePasswordToken,
+  changePassword,
 } from "./user.controller";
 // import { verify } from "jsonwebtoken";
 const userRouter = express.Router();
@@ -80,11 +82,24 @@ userRouter.post(
   }
 );
 userRouter.post(
+  "/CPToken",
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+      const { email } = req.body;
+      if (!email) throw new Error("Email does not exist");
+      const result = await changePasswordToken(email);
+      return res.status(200).json({ data: result, msg: "success" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+userRouter.post(
   "/forget-password",
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const { email, password, otpToken } = req.body;
-      const result = await forgotPassword(email,otpToken,password);
+      const result = await forgotPassword(email, otpToken, password);
       return res
         .status(200)
         .json({ data: result, msg: "your password updated successfully" });
@@ -93,5 +108,23 @@ userRouter.post(
     }
   }
 );
-
+userRouter.post(
+  "/change-password",
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+      const { email, otpToken, oldPassword, newPassword } = req.body;
+      const result = await changePassword(
+        email,
+        otpToken,
+        oldPassword,
+        newPassword
+      );
+      return res
+        .status(200)
+        .json({ data: result, msg: "your password is changed successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default userRouter;
