@@ -13,7 +13,6 @@ import {
   changePasswordToken,
   changePassword,
 } from "./user.controller";
-// import { verify } from "jsonwebtoken";
 const userRouter = express.Router();
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
