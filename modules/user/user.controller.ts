@@ -74,7 +74,6 @@ export const blockUser = async (id: number, body: User): Promise<User> => {
     },
   });
   if (!user) throw new Error("user is not found");
-  console.log(typeof id, id, "checking id");
   return await prisma.user.update({
     where: {
       id: id,

@@ -6,6 +6,7 @@ import {
   getUserByid,
   createUser,
   blockUser,
+  deleteUser,
 } from "./user.controller";
 import { roleValidator } from "../../utils/secure";
 
@@ -52,11 +53,17 @@ userRouter.post(
 userRouter.put(
   "/block/:id",
   roleValidator(["ADMIN"]),
-  async (res: Response, req: Request): Promise<Response<any>> => {
-    console.log(req.params.id, "xxx");
+  async (req: Request, res: Response): Promise<Response<any>> => {
     const userId = parseInt(req.params.id);
-    console.log(userId, "checking user id");
     const result = await blockUser(userId, req.body);
+    return res.status(200).json({ data: result, msg: "successful operation" });
+  }
+);
+userRouter.put(
+  "/delete/:id",
+  roleValidator(["ADMIN"]),
+  async (req: Request, res: Response): Promise<Response<any>> => {
+    const result = await deleteUser(parseInt(req.params.id), req.body);
     return res.status(200).json({ data: result, msg: "successful operation" });
   }
 );
