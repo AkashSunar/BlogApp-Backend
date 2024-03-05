@@ -25,6 +25,8 @@ model User{
   isArchive Boolean @default(false)
   image String
   role Role @default(USER)
+  created_by Int @default(0)
+  updated_by Int @default(0)
 }
 
 enum Role{

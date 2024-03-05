@@ -1,19 +1,14 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { UserType } from "./user.type";
 import multer from "multer";
-import { userValidator } from "../../middlewares/validate-middleware";
 import {
-  createUser,
   getAllUser,
   getUserByid,
-  login,
-  verify,
-  forgetPasswordtoken,
-  forgotPassword,
-  changePasswordToken,
-  changePassword,
+  createUser,
+  blockUser,
 } from "./user.controller";
-const userRouter = express.Router();
+import { roleValidator } from "../../utils/secure";
+
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
     return cb(null, "./public/users");
@@ -24,6 +19,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+const userRouter = express.Router();
 
 userRouter.get(
   "/",
@@ -40,90 +37,27 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 userRouter.post(
-  "/signup",
+  "/",
   upload.single("image"),
-  userValidator,
+  roleValidator(["ADMIN"]),
   async (req: Request, res: Response): Promise<Response<UserType>> => {
     if (req?.file) {
       req.body.image = req.file.filename;
     }
+    req.body.created_by = (req as any).userId;
     const newUser = await createUser(req.body);
     return res.status(201).json(newUser);
   }
 );
-userRouter.post(
-  "/verify",
-  async (req: Request, res: Response): Promise<any> => {
-    try {
-      const result = await verify(req.body);
-      return res.status(200).json({ data: result, msg: "success" });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-userRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
-  const result = await login(req.body.email, req.body.password);
-  return res.status(200).json(result);
-});
-
-userRouter.post(
-  "/FPToken",
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    try {
-      const { email } = req.body;
-      if (!email) throw new Error("Email doesn't exist");
-      const result = await forgetPasswordtoken(email);
-      return res.status(200).json({ data: result, msg: "success" });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-userRouter.post(
-  "/CPToken",
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    try {
-      const { email } = req.body;
-      if (!email) throw new Error("Email does not exist");
-      const result = await changePasswordToken(email);
-      return res.status(200).json({ data: result, msg: "success" });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-userRouter.post(
-  "/forget-password",
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    try {
-      const { email, password, otpToken } = req.body;
-      const result = await forgotPassword(email, otpToken, password);
-      return res
-        .status(200)
-        .json({ data: result, msg: "your password updated successfully" });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-userRouter.post(
-  "/change-password",
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    try {
-      const { email, otpToken, oldPassword, newPassword } = req.body;
-      const result = await changePassword(
-        email,
-        otpToken,
-        oldPassword,
-        newPassword
-      );
-      return res
-        .status(200)
-        .json({ data: result, msg: "your password is changed successfully" });
-    } catch (error) {
-      next(error);
-    }
+userRouter.put(
+  "/block/:id",
+  roleValidator(["ADMIN"]),
+  async (res: Response, req: Request): Promise<Response<any>> => {
+    console.log(req.params.id, "xxx");
+    const userId = parseInt(req.params.id);
+    console.log(userId, "checking user id");
+    const result = await blockUser(userId, req.body);
+    return res.status(200).json({ data: result, msg: "successful operation" });
   }
 );
 export default userRouter;
