@@ -8,7 +8,6 @@ import bcrypt from "bcrypt";
 import { mailer } from "../../services/mailer";
 import jwt from "jsonwebtoken";
 
-
 export const createUser = async (user: any): Promise<User> => {
   const saltRounds = 10;
   const {
@@ -93,7 +92,9 @@ export const login = async (
     email: user.email,
     id: user.id,
   };
-  const token = jwt.sign(payload, process.env.SECRET || "");
+  const token = jwt.sign(payload, process.env.SECRET || "", {
+    expiresIn: "3m",
+  });
   return {
     email: user.email,
     token: token,
