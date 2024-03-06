@@ -13,10 +13,12 @@ model  Blog{
   content String
   author String
   likes Int
+  userId Int @default(1)
+  created_By User @relation(fields: [userId],references: [id])
 }
 model User{
   id Int @id @default(autoincrement())
-  name String
+  name String 
   username String
   email String @unique
   passwordHash String 
@@ -27,6 +29,7 @@ model User{
   role Role @default(USER)
   created_by Int @default(0)
   updated_by Int @default(0)
+  blogs Blog[]
 }
 
 enum Role{

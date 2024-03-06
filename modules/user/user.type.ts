@@ -11,6 +11,7 @@ export interface UserType {
   role?: Role;
   updated_by?: number;
   created_by?: number;
+  blogs:number[]
 }
 enum Role {
   "USER",
