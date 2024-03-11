@@ -1,7 +1,6 @@
 import prisma from "../../DB/db.config";
 import { Auth } from "./auth.type";
 import { User } from "@prisma/client";
-// import { Auth } from "../auth/auth.type";
 import { UserReturnType } from "../user/user.type";
 import { generateOTP, verifyOTP } from "../../utils/otp";
 import bcrypt from "bcrypt";
@@ -92,12 +91,23 @@ export const login = async (
     email: user.email,
     id: user.id,
   };
-  const token = jwt.sign(payload, process.env.SECRET || "", {
+  const accessToken = jwt.sign(payload, process.env.SECRET || "", {
     expiresIn: "3m",
   });
+
+  const refreshToken = jwt.sign(
+    payload,
+    process.env.REFRESH_TOKEN_SECRET || "",
+    { expiresIn: "1w" }
+  );
+
+  // const refreshTokenPayload={userId:user.id,token:refreshToken}
+  // await prisma.token.create({data:refreshTokenPayload})
+
   return {
     email: user.email,
-    token: token,
+    accessToken,
+    refreshToken,
   };
 };
 
@@ -147,7 +157,7 @@ export const forgotPassword = async (
   });
   if (!authUser) throw new Error("user doesn't exist");
   const isValidToken = verifyOTP(String(otpToken));
-  console.log(isValidToken, "checking validity");
+  // console.log(isValidToken, "checking validity");
   if (!isValidToken) throw new Error("provided otp token is not valid");
   const isEmailValid = authUser.otpToken === otpToken;
   if (!isEmailValid) throw new Error(" provided email is not valid");
