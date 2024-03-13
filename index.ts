@@ -13,6 +13,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 app.use(cookieParser());
 const PORT = process.env.PORT;
+// console.log(process.env.NODE_ENV)
 app.use(
   "/api-docs",
   swaggerUi.serve,
