@@ -63,6 +63,7 @@ describe("Blog controller Testing", () => {
       jest.clearAllMocks();
       jest.spyOn(prisma.blog, "findMany").mockResolvedValue(sampleBlogData);
       const allBlogs = await getAllBlog();
+      // console.log(allBlogs,"checking all blogs")
       expect(allBlogs).toEqual(sampleBlogData);
     });
   });
