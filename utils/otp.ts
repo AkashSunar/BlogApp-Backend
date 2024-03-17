@@ -9,5 +9,6 @@ export const generateOTP = () => {
 };
 export const verifyOTP = (token:string) => {
   totp.options = { digits: 6, step: 300 };
+  console.log(totp.check(token, process.env.OTP_SECRET || ""),"checking otp")
   return totp.check(token, process.env.OTP_SECRET || "");
 };

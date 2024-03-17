@@ -53,6 +53,7 @@ export const verify = async (userAuth: Auth) => {
   });
   if (!auth) throw new Error("user is not available");
   const isValidToken = verifyOTP(String(otpToken));
+  console.log(isValidToken)
   if (!isValidToken) throw new Error("token is expired");
   const emaiLValid = auth.otpToken === otpToken;
   if (!emaiLValid) throw new Error("there is problem in token");
