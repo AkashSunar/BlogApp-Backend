@@ -51,9 +51,10 @@ export const verify = async (userAuth: Auth) => {
       email,
     },
   });
+  // console.log(auth,"checking auth")
   if (!auth) throw new Error("user is not available");
   const isValidToken = verifyOTP(String(otpToken));
-  console.log(isValidToken)
+  // console.log(isValidToken)
   if (!isValidToken) throw new Error("token is expired");
   const emaiLValid = auth.otpToken === otpToken;
   if (!emaiLValid) throw new Error("there is problem in token");
@@ -84,7 +85,7 @@ export const login = async (
   if (!user) throw new Error("user not found");
   const passwordCorrect =
     user === null ? false : await bcrypt.compare(password, user.passwordHash);
-  if (!(passwordCorrect && user)) throw new Error("Invalid error or password");
+  if (!(passwordCorrect && user)) throw new Error("Invalid email or password");
   if (!user.isEmailVerified) throw new Error("Email is not verified");
   if (!user.isActive) throw new Error("Email is not active yet");
 
@@ -161,7 +162,7 @@ export const forgotPassword = async (
   // console.log(isValidToken, "checking validity");
   if (!isValidToken) throw new Error("provided otp token is not valid");
   const isEmailValid = authUser.otpToken === otpToken;
-  if (!isEmailValid) throw new Error(" provided email is not valid");
+  if (!isEmailValid) throw new Error("there is problem in token");
   await prisma.user.update({
     where: {
       email,
@@ -202,7 +203,7 @@ export const changePassword = async (
   const passwordCorrect = await bcrypt.compare(oldPassword, user.passwordHash);
   // const passwordCorrect =
   // user?.passwordHash === (await bcrypt.hash(oldPassword, saltRounds));
-  console.log(passwordCorrect, "checking passwordcorrect");
+  // console.log(passwordCorrect, "checking passwordcorrect");
   if (!passwordCorrect)
     throw new Error("old password you provided is incorrect");
   await prisma.user.update({
