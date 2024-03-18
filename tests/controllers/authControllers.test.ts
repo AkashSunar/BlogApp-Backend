@@ -6,6 +6,7 @@ import {
   forgetPasswordtoken,
   forgotPassword,
   changePassword,
+  changePasswordToken,
 } from "../../modules/auth/auth.controllers";
 import bcrypt from "bcrypt";
 import * as OTP from "../../utils/otp";
@@ -22,10 +23,10 @@ jest.mock("jsonwebtoken", () => ({
   sign: jest.fn().mockReturnValue("yourToken"),
 }));
 
-jest.mock("../../utils/jwt", () => ({
-  signJwt: jest.fn().mockResolvedValue("jwtToken"),
-  verifyJwt: jest.fn(),
-}));
+// jest.mock("../../utils/jwt", () => ({
+//   signJwt: jest.fn().mockResolvedValue("jwtToken"),
+//   verifyJwt: jest.fn(),
+// }));
 jest.mock("../../services/mailer", () => ({
   mailer: jest.fn(() => "example@email.com"),
 }));
@@ -300,7 +301,7 @@ describe("Auth controller testing", () => {
       expect(mailer).toHaveBeenCalledWith(authUser.email, 111111);
     });
 
-    it("shouldthrow an error if user is not found", async () => {
+    it("should throw an error if user is not found", async () => {
       jest.spyOn(prisma.user, "findUnique").mockResolvedValue(null);
       const result = forgetPasswordtoken(expectedResult.email);
       await expect(result).rejects.toThrow("user doesn't exist");
@@ -553,6 +554,36 @@ describe("Auth controller testing", () => {
         changePasswordPayload.oldPassword,
         "hashedPassword"
       );
+    });
+  });
+  describe("Generate changePassword token", () => {
+    it("should generate changepassword token", async () => {
+      jest.spyOn(prisma.user, "findUnique").mockResolvedValue(expectedResult);
+      jest.spyOn(OTP, "generateOTP").mockReturnValue("111111");
+      jest.spyOn(prisma.auth, "create").mockResolvedValue(authUser as Auth);
+      const result = await changePasswordToken(authUser.email);
+      expect(result).toBe(true);
+      expect(OTP.generateOTP()).toEqual("111111");
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          email: expectedResult.email,
+        },
+      });
+      expect(prisma.auth.create).toHaveBeenCalledWith({
+        data: authUser,
+      });
+      expect(OTP.generateOTP).toHaveBeenCalled();
+      expect(mailer).toHaveBeenCalledWith(authUser.email, 111111);
+    });
+    it("should throw an error if user is not found", async () => {
+      jest.spyOn(prisma.user, "findUnique").mockResolvedValue(null);
+      const result = changePasswordToken(expectedResult.email);
+      await expect(result).rejects.toThrow("user doesn't exist");
+      expect(prisma.user.findUnique).toHaveBeenLastCalledWith({
+        where: {
+          email: expectedResult.email,
+        },
+      });
     });
   });
 });
