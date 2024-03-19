@@ -140,11 +140,25 @@ describe("User Controller Testing", () => {
         data: blockingData,
       });
     });
+    it("should throw an error if user is not found", async () => {
+      const blockingData = {
+        isActive: false,
+      };
+      jest.spyOn(prisma.user, "findUnique").mockResolvedValue(null);
+      const result = blockUser(expectedResult.id, blockingData as User);
+      await expect(result).rejects.toThrow("user is not found");
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: expectedResult.id,
+        },
+      });
+    });
   });
 
   describe("Delete a user", () => {
     it("should delete the user of that id", async () => {
       const deletingData = { isArchive: true };
+      jest.spyOn(prisma.user, "findUnique").mockResolvedValue(expectedResult);
       jest.spyOn(prisma.user, "update").mockResolvedValue(deletingData as User); //to pass only {isActive:false} otherwise it wants(expects) all the fields
       const deletedUser = await deleteUser(
         expectedResult.id,
@@ -152,11 +166,27 @@ describe("User Controller Testing", () => {
       );
       expect(deletedUser).toEqual(deletingData);
       expect(deletedUser.isArchive).toEqual(true);
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: expectedResult.id,
+        },
+      });
       expect(prisma.user.update).toHaveBeenCalledWith({
         where: {
           id: expectedResult.id,
         },
         data: deletingData,
+      });
+    });
+    it("should throw an error if user is not found", async () => {
+      const deletingData = { isArchive: true };
+      jest.spyOn(prisma.user, "findUnique").mockResolvedValue(null);
+      const result = deleteUser(expectedResult.id, deletingData as User);
+      await expect(result).rejects.toThrow("user not found");
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: expectedResult.id,
+        },
       });
     });
   });
