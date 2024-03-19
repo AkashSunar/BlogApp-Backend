@@ -11,7 +11,7 @@ export interface UserType {
   role?: Role;
   updated_by?: number;
   created_by?: number;
-  blogs:number[]
+  blogs: number[];
 }
 enum Role {
   "USER",
@@ -19,5 +19,6 @@ enum Role {
 }
 export interface UserReturnType {
   email: string;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }

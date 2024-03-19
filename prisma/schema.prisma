@@ -4,9 +4,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url =env("DATABASE_URL")
 }
 
+// datasource testDb{
+//   provider = "postgresql"
+//   url = env("TEST_DB_URL")
+// }
 model  Blog{
   id Int @id @default(autoincrement())
   title String
