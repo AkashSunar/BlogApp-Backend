@@ -50,7 +50,16 @@ authRouter.post(
 );
 authRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
   const result = await login(req.body.email, req.body.password);
-  return res.status(200).json(result);
+  const { accessToken, refreshToken, email } = result;
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 120000,
+    httpOnly: false,
+    domain: "localhost",
+    path: "/",
+    sameSite: "strict",
+    secure: false,
+  });
+  return res.status(200).json({ accessToken, email });
 });
 
 authRouter.post(

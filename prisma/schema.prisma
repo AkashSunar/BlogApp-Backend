@@ -4,19 +4,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url =env("DATABASE_URL")
 }
 
+// datasource testDb{
+//   provider = "postgresql"
+//   url = env("TEST_DB_URL")
+// }
 model  Blog{
   id Int @id @default(autoincrement())
   title String
   content String
   author String
   likes Int
+  userId Int @default(1)
+  created_By User @relation(fields: [userId],references: [id])
 }
 model User{
   id Int @id @default(autoincrement())
-  name String
+  name String 
   username String
   email String @unique
   passwordHash String 
@@ -27,6 +33,7 @@ model User{
   role Role @default(USER)
   created_by Int @default(0)
   updated_by Int @default(0)
+  blogs Blog[]
 }
 
 enum Role{
