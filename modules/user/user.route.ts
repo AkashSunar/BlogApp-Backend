@@ -1,16 +1,15 @@
 import express, { Request, Response } from "express";
 import { UserType } from "./user.type";
 import multer from "multer";
-import { userValidator } from "../../middlewares/validate-middleware";
 import {
-  createUser,
   getAllUser,
   getUserByid,
-  login,
-  verify,
+  createUser,
+  blockUser,
+  deleteUser,
 } from "./user.controller";
-// import { verify } from "jsonwebtoken";
-const userRouter = express.Router();
+import { roleValidator } from "../../utils/secure";
+
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
     return cb(null, "./public/users");
@@ -21,6 +20,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+const userRouter = express.Router();
 
 userRouter.get(
   "/",
@@ -37,31 +38,33 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 userRouter.post(
-  "/signup",
+  "/",
   upload.single("image"),
-  userValidator,
+  roleValidator(["ADMIN"]),
   async (req: Request, res: Response): Promise<Response<UserType>> => {
     if (req?.file) {
       req.body.image = req.file.filename;
     }
+    req.body.created_by = (req as any).userId;
     const newUser = await createUser(req.body);
     return res.status(201).json(newUser);
   }
 );
-userRouter.post(
-  "/verify",
-  async (req: Request, res: Response): Promise<any> => {
-    try {
-      const result = await verify(req.body);
-      return res.status(200).json({ data: result, msg: "success" });
-    } catch (error) {
-      console.log(error);
-    }
+userRouter.put(
+  "/block/:id",
+  roleValidator(["ADMIN"]),
+  async (req: Request, res: Response): Promise<Response<any>> => {
+    const userId = parseInt(req.params.id);
+    const result = await blockUser(userId, req.body);
+    return res.status(200).json({ data: result, msg: "successful operation" });
   }
 );
-userRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
-  const result = await login(req.body.email, req.body.password);
-  return res.status(200).json(result);
-});
-
+userRouter.put(
+  "/delete/:id",
+  roleValidator(["ADMIN"]),
+  async (req: Request, res: Response): Promise<Response<any>> => {
+    const result = await deleteUser(parseInt(req.params.id), req.body);
+    return res.status(200).json({ data: result, msg: "successful operation" });
+  }
+);
 export default userRouter;
