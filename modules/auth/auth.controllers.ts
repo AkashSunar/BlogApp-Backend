@@ -83,9 +83,8 @@ export const login = async (
   });
 
   if (!user) throw new Error("user not found");
-  const passwordCorrect =
-    user === null ? false : await bcrypt.compare(password, user.passwordHash);
-  if (!(passwordCorrect && user)) throw new Error("Invalid email or password");
+  const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
+  if (!(passwordCorrect && user)) throw new Error("Invalid error or password");
   if (!user.isEmailVerified) throw new Error("Email is not verified");
   if (!user.isActive) throw new Error("Email is not active yet");
 

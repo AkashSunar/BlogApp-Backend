@@ -67,6 +67,7 @@ export const createUser = async (user: any): Promise<User> => {
     data: newUser,
   });
 };
+
 export const blockUser = async (id: number, body: User): Promise<User> => {
   const user = await prisma.user.findUnique({
     where: {
