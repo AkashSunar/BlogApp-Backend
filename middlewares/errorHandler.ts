@@ -7,7 +7,10 @@ export const erroHandler = async (
 ): Promise<any> => {
   if (err) {
     console.log(err.name);
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).send("Token is expired");
+    }
     // next();
-    res.send("i have to handle expired token");
+    return res.status(500).send("Internal Server Error");
   }
 };
