@@ -1,6 +1,10 @@
 import express, { Request, Response } from "express";
 import { Blog } from "./blog.type";
-import {blogValidator } from "../../middlewares/validate-middleware"
+// import { Blog as blog}from "@prisma/client";
+import {
+  blogUpdateValidator,
+  blogValidator,
+} from "../../middlewares/validate-middleware";
 import {
   createBlog,
   getAllBlog,
@@ -8,6 +12,8 @@ import {
   deleteBlogById,
   updateBlog,
 } from "./blogControllers";
+import { tokenExtractor } from "../../middlewares/userValidators";
+// import prisma from "../../DB/db.config";
 
 const blogRouter = express.Router();
 
@@ -21,6 +27,7 @@ blogRouter.get(
 
 blogRouter.get(
   "/:id",
+  tokenExtractor,
   async (req: Request, res: Response): Promise<Response<Blog>> => {
     const blogId = parseInt(req.params.id);
     const blog = await getBlogById(blogId);
@@ -29,7 +36,9 @@ blogRouter.get(
 );
 
 blogRouter.post(
-  "/",blogValidator,
+  "/",
+  blogValidator,
+  tokenExtractor,
   async (req: Request, res: Response): Promise<Response<Blog>> => {
     const newBlog = await createBlog(req.body);
     return res.status(201).json(newBlog);
@@ -37,19 +46,32 @@ blogRouter.post(
 );
 
 blogRouter.put(
-  "/:id",blogValidator,
+  "/:id",
+  blogUpdateValidator,
+  tokenExtractor,
   async (req: Request, res: Response): Promise<Response<Blog>> => {
+    const id = req.body.userId;
     const blogId = parseInt(req.params.id);
-    const content = req.body;
-    await updateBlog(blogId, content);
+    const blog = (await getBlogById(blogId)) as Blog;
+    if (!blog) throw new Error("blog doesnt exist");
+    if (id !== blog.userId)
+      throw new Error("This blog is not created by updating user");
+    // const content = req.body;
+    await updateBlog(blogId, req.body);
     return res.status(201).json({ msg: "Blog updated successfully" });
   }
 );
 
 blogRouter.delete(
   "/:id",
+  tokenExtractor,
   async (req: Request, res: Response): Promise<Response<Blog>> => {
+    const id = req.body.userId;
     const blogId = parseInt(req.params.id);
+    const blog = (await getBlogById(blogId)) as Blog;
+    if (!blog) throw new Error("blog doesnt exist");
+    if (id !== blog.userId)
+      throw new Error("This blog is not created by deleting user");
     await deleteBlogById(blogId);
     return res.status(200).json({ msg: "Deleted successfully" });
   }

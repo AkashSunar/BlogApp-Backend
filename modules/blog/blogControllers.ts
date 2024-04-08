@@ -1,7 +1,9 @@
 import prisma from "../../DB/db.config";
-import { Blog } from "./blog.type";
+// import { Blog } from "./blog.type";
+import { Blog } from "@prisma/client";
 
 export const createBlog = async (blog: Blog): Promise<Blog> => {
+  // console.log("checking coverage")
   return await prisma.blog.create({
     data: blog,
   });

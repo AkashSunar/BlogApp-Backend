@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "created_by" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "updated_by" INTEGER NOT NULL DEFAULT 0;
