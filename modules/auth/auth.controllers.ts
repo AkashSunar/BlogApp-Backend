@@ -200,9 +200,7 @@ export const changePassword = async (
   });
   if (!user) throw new Error("user not found");
   const passwordCorrect = await bcrypt.compare(oldPassword, user.passwordHash);
-  // const passwordCorrect =
-  // user?.passwordHash === (await bcrypt.hash(oldPassword, saltRounds));
-  // console.log(passwordCorrect, "checking passwordcorrect");
+
   if (!passwordCorrect)
     throw new Error("old password you provided is incorrect");
   await prisma.user.update({
