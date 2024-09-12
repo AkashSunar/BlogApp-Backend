@@ -4,4 +4,6 @@ export interface Blog {
   content: string;
   author: string;
   likes: number;
+  userId: number;
+  createdBy:number;
 }
