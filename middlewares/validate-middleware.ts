@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { blogSchema } from "../modules/blog/blogValidators";
+import { blogSchema, updateSchema } from "../modules/blog/blogValidators";
 import { userSchema } from "../modules/user/userValidators";
 
 export const blogValidator = (
@@ -9,6 +9,19 @@ export const blogValidator = (
 ) => {
   try {
     blogSchema.parse(req.body);
+    next();
+  } catch (err) {
+    const errorMessage = err.errors[0].message;
+    res.status(400).json({ msg: errorMessage });
+  }
+};
+export const blogUpdateValidator = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    updateSchema.parse(req.body);
     next();
   } catch (err) {
     const errorMessage = err.errors[0].message;
