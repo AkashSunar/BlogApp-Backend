@@ -1,7 +1,6 @@
 import prisma from "../../DB/db.config";
 import { Auth } from "./auth.type";
 import { User } from "@prisma/client";
-// import { Auth } from "../auth/auth.type";
 import { UserReturnType } from "../user/user.type";
 import { generateOTP, verifyOTP } from "../../utils/otp";
 import bcrypt from "bcrypt";
@@ -52,8 +51,10 @@ export const verify = async (userAuth: Auth) => {
       email,
     },
   });
+  // console.log(auth,"checking auth")
   if (!auth) throw new Error("user is not available");
   const isValidToken = verifyOTP(String(otpToken));
+  // console.log(isValidToken)
   if (!isValidToken) throw new Error("token is expired");
   const emaiLValid = auth.otpToken === otpToken;
   if (!emaiLValid) throw new Error("there is problem in token");
@@ -82,8 +83,7 @@ export const login = async (
   });
 
   if (!user) throw new Error("user not found");
-  const passwordCorrect =
-    user === null ? false : await bcrypt.compare(password, user.passwordHash);
+  const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
   if (!(passwordCorrect && user)) throw new Error("Invalid error or password");
   if (!user.isEmailVerified) throw new Error("Email is not verified");
   if (!user.isActive) throw new Error("Email is not active yet");
@@ -92,12 +92,23 @@ export const login = async (
     email: user.email,
     id: user.id,
   };
-  const token = jwt.sign(payload, process.env.SECRET || "", {
+  const accessToken = jwt.sign(payload, process.env.SECRET || "", {
     expiresIn: "3m",
   });
+
+  const refreshToken = jwt.sign(
+    payload,
+    process.env.REFRESH_TOKEN_SECRET || "",
+    { expiresIn: "1w" }
+  );
+
+  // const refreshTokenPayload={userId:user.id,token:refreshToken}
+  // await prisma.token.create({data:refreshTokenPayload})
+
   return {
     email: user.email,
-    token: token,
+    accessToken,
+    refreshToken,
   };
 };
 
@@ -147,10 +158,10 @@ export const forgotPassword = async (
   });
   if (!authUser) throw new Error("user doesn't exist");
   const isValidToken = verifyOTP(String(otpToken));
-  console.log(isValidToken, "checking validity");
+  // console.log(isValidToken, "checking validity");
   if (!isValidToken) throw new Error("provided otp token is not valid");
   const isEmailValid = authUser.otpToken === otpToken;
-  if (!isEmailValid) throw new Error(" provided email is not valid");
+  if (!isEmailValid) throw new Error("there is problem in token");
   await prisma.user.update({
     where: {
       email,
@@ -189,9 +200,7 @@ export const changePassword = async (
   });
   if (!user) throw new Error("user not found");
   const passwordCorrect = await bcrypt.compare(oldPassword, user.passwordHash);
-  // const passwordCorrect =
-  // user?.passwordHash === (await bcrypt.hash(oldPassword, saltRounds));
-  console.log(passwordCorrect, "checking passwordcorrect");
+
   if (!passwordCorrect)
     throw new Error("old password you provided is incorrect");
   await prisma.user.update({

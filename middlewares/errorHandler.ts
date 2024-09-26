@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from "express";
-
-export const erroHandler = (
+export const erroHandler = async (
   err: Error,
   _req: Request,
   res: Response,
   _next: NextFunction
-): any => {
+): Promise<any> => {
   if (err) {
+    console.log(err.name);
     if (err.name === "TokenExpiredError") {
-      res.send("i have to handle expired token");
+      return res.status(401).send("Token is expired");
     }
-    return res.json({ message: err.name, myTExt: "akash" });
+    // next();
+    return res.status(500).send("Internal Server Error");
   }
 };

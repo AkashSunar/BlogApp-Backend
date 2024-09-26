@@ -9,8 +9,11 @@ import cors from "cors";
 import swaggerSpec from "./documentation";
 
 import express from "express";
+import cookieParser from "cookie-parser";
 const app = express();
+app.use(cookieParser());
 const PORT = process.env.PORT;
+// console.log(process.env.NODE_ENV)
 app.use(
   "/api-docs",
   swaggerUi.serve,
@@ -22,7 +25,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter); //directs routes to route folder
-app.use(erroHandler)
+app.use(erroHandler);
 app.listen(PORT, () => {
   console.log(`server running at ${PORT}`);
 });
