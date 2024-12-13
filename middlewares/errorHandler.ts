@@ -10,7 +10,6 @@ export const erroHandler = async (
     if (err.name === "TokenExpiredError") {
       return res.status(401).send("Token is expired");
     }
-    // next();
     return res.status(500).send("Internal Server Error");
   }
 };
